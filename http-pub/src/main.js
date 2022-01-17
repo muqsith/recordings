@@ -1,1 +1,6 @@
-console.log("chocolate ice cream wafer");
+import React from "react";
+import { render } from "react-dom";
+
+import { App } from "./App";
+
+render(<App />, document.querySelector("#recordings-app"));
