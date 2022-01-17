@@ -1,3 +1,4 @@
 bin/
 tmp/
 http-pub/build/
+http-pub/node_modules/

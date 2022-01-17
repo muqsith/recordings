@@ -27,17 +27,19 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "build", "static"),
     publicPath: "/static/",
-    filename: "recordings.bundle.[contenthash:8].js",
+    filename: "recordings.bundle.[hash:8].js",
   },
   devServer: {
-    watchFiles: ["src/**/*"],
-    liveReload: true,
+    hot: true,
+    devMiddleware: {
+      writeToDisk: true,
+    },
     static: {
       directory: path.join(__dirname, "build"),
     },
     port: 3000,
   },
-  devtool: WEBPACK_MODE !== "build-production" ? "eval" : "",
+  devtool: WEBPACK_MODE === "build" ? undefined : "eval",
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({

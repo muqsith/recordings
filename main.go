@@ -11,7 +11,7 @@ func RegisterHttpPub(router *gin.Engine) {
 	// the files are loaded into the binary during compile time
 	// the static files can be skipped based on the build env
 	router.LoadHTMLGlob("http-pub/build/index.html")
-	router.GET("/index", func (c *gin.Context) {
+	router.GET("/", func (c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 	router.Static("/static", "http-pub/build/static")
