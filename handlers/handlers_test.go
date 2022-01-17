@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,8 +13,9 @@ import (
 // go test -timeout 0 -run TestAlbumsRouter
 // go test -run TestAlbumsRouter
 func TestAlbumsRouter(t *testing.T) {
-	router := GetRouter()
-	req := httptest.NewRequest("GET", "/albums", nil)
+	router := gin.Default()
+	Register(router)
+	req := httptest.NewRequest("GET", "/api/albums", nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 

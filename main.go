@@ -1,19 +1,25 @@
 package main
 
-import "recordings/handlers"
+import (
+	"net/http"
+	"recordings/handlers"
 
-/*
-	Post request:
-	curl http://localhost:8080/albums \
-    --include \
-    --header "Content-Type: application/json" \
-    --request "POST" \
-    --data '{"id": "4","title": "The Modern Sound of Betty Carter","artist": "Betty Carter","price": 49.99}'
-*/
+	"github.com/gin-gonic/gin"
+)
 
-
+func RegisterHttpPub(router *gin.Engine) {
+	// the files are loaded into the binary during compile time
+	// the static files can be skipped based on the build env
+	router.LoadHTMLGlob("http-pub/build/index.html")
+	router.GET("/index", func (c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+	router.Static("/static", "http-pub/build/static")
+}
 
 func main() {
-	router := handlers.GetRouter()
+	router := gin.Default()
+	RegisterHttpPub(router)
+	handlers.Register(router)
 	router.Run("localhost:8080")
 }

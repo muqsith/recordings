@@ -9,12 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetRouter() *gin.Engine {
-	router := gin.Default()
-	router.GET("/albums", getAlbums)
-	router.GET("/albums/:id", getAlbumByID)
-	router.POST("/albums", postAlbums)
-	return router
+func Register(router *gin.Engine)  {
+	// api
+	router.GET("/api/albums", getAlbums)
+	router.GET("/api/albums/:id", getAlbumByID)
+	router.POST("/api/albums", postAlbums)
 }
 
 // getAlbums responds with the list of all albums as JSON.
@@ -22,6 +21,16 @@ func getAlbums(c *gin.Context) {
 	albums, _ := dal.GetAll()
 	c.IndentedJSON(http.StatusOK, albums)
 }
+
+
+/*
+	Post request:
+	curl http://localhost:8080/albums \
+    --include \
+    --header "Content-Type: application/json" \
+    --request "POST" \
+    --data '{"id": "4","title": "The Modern Sound of Betty Carter","artist": "Betty Carter","price": 49.99}'
+*/
 
 // postAlbums adds an album from JSON received in the request body.
 func postAlbums(c *gin.Context) {
