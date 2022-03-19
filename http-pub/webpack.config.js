@@ -1,14 +1,21 @@
-const path = require("path");
+const pathModule = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin").default;
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const oconf = require('oconf');
 
-const WEBPACK_MODE = process.env.npm_lifecycle_event;
+const NPM_EVENT = process.env.npm_lifecycle_event;
+
+const APP_CONFIG = process.env.APP_CONFIG;
+
+const CONFIG = oconf.load(pathModule.resolve(__dirname, '..', 'config', `${APP_CONFIG}.cjson`));
+
+const WEBPACK_MODE = NPM_EVENT === 'build' ? 'production' : 'development';
 
 module.exports = {
   entry: "./src/main.js",
-  mode: WEBPACK_MODE === "build" ? "production" : "development",
+  mode: WEBPACK_MODE,
   module: {
     rules: [
       {
@@ -25,7 +32,7 @@ module.exports = {
   },
   resolve: { extensions: ["*", ".js", ".jsx"] },
   output: {
-    path: path.resolve(__dirname, "build", "static"),
+    path: pathModule.resolve(__dirname, "build", "static"),
     publicPath: "/static/",
     filename: "recordings.bundle.[hash:8].js",
   },
@@ -35,23 +42,26 @@ module.exports = {
       writeToDisk: true,
     },
     static: {
-      directory: path.join(__dirname, "build"),
+      directory: pathModule.join(__dirname, "build"),
     },
     port: 3000,
   },
   devtool: WEBPACK_MODE === "build" ? undefined : "eval",
   plugins: [
+    new webpack.DefinePlugin({
+      CONFIG: JSON.stringify(CONFIG)
+    }), 
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "src", "index.html"),
+      template: pathModule.resolve(__dirname, "src", "index.html"),
       filename: "../index.html",
     }),
     new MiniCssExtractPlugin({ filename: "build/main.css" }),
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, "src", "images"),
-          to: path.resolve(__dirname, "build", "static", "images"),
+          from: pathModule.resolve(__dirname, "src", "images"),
+          to: pathModule.resolve(__dirname, "build", "static", "images"),
         },
       ],
     }),

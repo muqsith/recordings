@@ -1,3 +1,3 @@
 .PHONY: build
 build:
-	go build -o bin/recordings -tags=jsoniter
+	cd server && go build -o ../bin/recordings -tags=jsoniter
