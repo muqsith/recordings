@@ -4,8 +4,8 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "export APP_CONFIG=development && rimraf build && webpack && webpack-dev-server --color",
-    "build": "export APP_CONFIG=production && rimraf build && webpack",
+    "start": "export APP_CONFIG=development && rimraf ../bin/build && webpack && webpack-dev-server --color",
+    "build": "export APP_CONFIG=production && rimraf ../bin/build && webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -32,7 +32,6 @@
     "oconf": "^5.4.0",
     "react-query": "^3.34.15",
     "rimraf": "^3.0.2",
-    "style-loader": "^3.3.1",
     "webpack": "^5.66.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.7.3",

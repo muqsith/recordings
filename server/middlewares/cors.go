@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ApplyCORSMiddleware(router *gin.Engine) {
+func ApplyCORSMiddleware(config map[string]interface{}, router *gin.Engine) {
 	// router.Use(cors.New(cors.Config{
   //   AllowOrigins:     []string{"https://foo.com"},
   //   AllowMethods:     []string{"PUT", "PATCH"},
@@ -18,6 +18,8 @@ func ApplyCORSMiddleware(router *gin.Engine) {
   //   MaxAge: 12 * time.Hour,
   // }))
 
-	// allow everything
-	router.Use(cors.Default())
+  appEnv := config["env"]
+  if appEnv != "production" {
+    router.Use(cors.Default())
+  }
 }

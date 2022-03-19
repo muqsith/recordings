@@ -14,6 +14,8 @@ const PUBLIC_CONFIG = CONFIG['#public'];
 
 const WEBPACK_MODE = NPM_EVENT === 'build' ? 'production' : 'development';
 
+const buildFolder = pathModule.resolve(__dirname, "..", "bin", "build");
+
 module.exports = {
   entry: "./src/main.js",
   mode: WEBPACK_MODE,
@@ -21,19 +23,19 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules|build)/,
+        exclude: /(node_modules)/,
         loader: "babel-loader",
         options: { presets: ["@babel/env"] },
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
     ],
   },
   resolve: { extensions: ["*", ".js", ".jsx"] },
   output: {
-    path: pathModule.resolve(__dirname, "build", "static"),
+    path: pathModule.resolve(buildFolder, "static"),
     publicPath: "/static/",
     filename: "recordings.bundle.[hash:8].js",
   },
@@ -43,7 +45,7 @@ module.exports = {
       writeToDisk: true,
     },
     static: {
-      directory: pathModule.join(__dirname, "build"),
+      directory: buildFolder,
     },
     port: 3000,
   },
@@ -57,12 +59,12 @@ module.exports = {
       template: pathModule.resolve(__dirname, "src", "index.html"),
       filename: "../index.html",
     }),
-    new MiniCssExtractPlugin({ filename: "build/main.css" }),
+    new MiniCssExtractPlugin({ filename: 'main.[hash:8].css' }),
     new CopyWebpackPlugin({
       patterns: [
         {
           from: pathModule.resolve(__dirname, "src", "images"),
-          to: pathModule.resolve(__dirname, "build", "static", "images"),
+          to: pathModule.resolve(buildFolder, "static", "images"),
         },
       ],
     }),

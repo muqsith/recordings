@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"recordings/handlers"
 	"recordings/middlewares"
 
@@ -12,14 +13,23 @@ import (
 	"github.com/muqsith/oconf"
 )
 
+func getCWD() string {
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	return exPath
+}
+
 func RegisterHttpPub(router *gin.Engine) {
-	// the files are loaded into the binary during compile time
-	// the static files can be skipped based on the build env
-	router.LoadHTMLGlob("../http-pub/build/index.html")
-	router.GET("/", func (c *gin.Context) {
+	cwd := getCWD()
+	pathSep := string(os.PathSeparator)
+	router.LoadHTMLGlob(cwd + pathSep + "build" + pathSep + "index.html")
+	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
-	router.Static("/static", "../http-pub/build/static")
+	router.Static("/static", cwd + pathSep + "build" + pathSep + "static")
 }
 
 func main() {
@@ -30,21 +40,30 @@ func main() {
 	flag.Parse()
 
 	if configFilePath == "" {
-		fmt.Printf("Invalid config file path %s", configFilePath)
+		fmt.Printf("Invalid config file path %s\n", configFilePath)
 		os.Exit(1)
 	}
 
 	fmt.Println("CONFIG: ", configFilePath)
 
 	config := oconf.GetFlatConfig(configFilePath)
-	fmt.Println("env: ", config["env"])
+	appEnv := config["env"]
+	fmt.Println("env: ", appEnv)
+
+	ginMode := gin.DebugMode
+	if appEnv == "production" {
+		ginMode = gin.ReleaseMode
+	}
+	gin.SetMode(ginMode)
 	router := gin.Default()
-	
-	// register frontend
-	RegisterHttpPub(router)
+
+	// register frontend only if not running in development mode
+	if appEnv == "production" {
+		RegisterHttpPub(router)
+	}
 
 	// apply middlewares
-	middlewares.ApplyCORSMiddleware(router)
+	middlewares.ApplyCORSMiddleware(config, router)
 	middlewares.ApplyMyCustomMiddleware(router)
 
 	// register API handlers
