@@ -1,3 +1,4 @@
 {
-  "appName": "Recordings"
+  "appName": "Recordings",
+  "apiUrl#public": "/"
 }

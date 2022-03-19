@@ -1,27 +1,16 @@
-import fetch from 'whatwg-fetch';
+import "whatwg-fetch";
 
-class DAL {
-  constructor() {
-    console.log('CONFIG: ', CONFIG);
-  }
+// CONFIG is global and it is injected by webpack with DefinePlugin
+const apiUrl = CONFIG.apiUrl;
 
-  async getRecordsList() {
-    const result = await fetch();
-    return result;
-  }
+export const getAlbumsList = async () => {
+  const response = await fetch(apiUrl + "/api/albums");
+  const result = await response.json();
+  return result;
+};
 
-  getRecord() {
+export const getAlbum = async () => {};
 
-  }
+export const createAlbum = async () => {};
 
-  createRecord() {
-
-  }
-
-  updateRecord() {
-    
-  }
- 
-}
-
-export default DAL;
+export const updateAlbum = async () => {};

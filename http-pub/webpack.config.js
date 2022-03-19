@@ -10,6 +10,7 @@ const NPM_EVENT = process.env.npm_lifecycle_event;
 const APP_CONFIG = process.env.APP_CONFIG;
 
 const CONFIG = oconf.load(pathModule.resolve(__dirname, '..', 'config', `${APP_CONFIG}.cjson`));
+const PUBLIC_CONFIG = CONFIG['#public'];
 
 const WEBPACK_MODE = NPM_EVENT === 'build' ? 'production' : 'development';
 
@@ -46,10 +47,10 @@ module.exports = {
     },
     port: 3000,
   },
-  devtool: WEBPACK_MODE === "build" ? undefined : "eval",
+  devtool: WEBPACK_MODE === "production" ? undefined : "eval-source-map",
   plugins: [
     new webpack.DefinePlugin({
-      CONFIG: JSON.stringify(CONFIG)
+      CONFIG: JSON.stringify(PUBLIC_CONFIG)
     }), 
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
