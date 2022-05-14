@@ -40,7 +40,7 @@ func init() {
 func GetAll() ([]model.Album, error) {
 	var albums []model.Album
 
-	rows, err := db.Query("SELECT * FROM album")
+	rows, err := db.Query("SELECT * FROM albums")
 	if err != nil {
 		defer rows.Close()
 	}
@@ -60,7 +60,7 @@ func AlbumsByArtist(name string) ([]model.Album, error) {
 	// An albums slice to hold data from returned rows.
 	var albums []model.Album
 
-	rows, err := db.Query("SELECT * FROM album WHERE artist = ?", name)
+	rows, err := db.Query("SELECT * FROM albums WHERE artist = ?", name)
 	if err != nil {
 		return nil, fmt.Errorf("albumsByArtist %q: %v", name, err)
 	}
@@ -82,7 +82,7 @@ func AlbumsByArtist(name string) ([]model.Album, error) {
 // AlbumByID returns album by id
 func AlbumByID(id int64) (model.Album, error) {
 	var alb model.Album
-	row := db.QueryRow("SELECT * FROM album WHERE id = ? ", id)
+	row := db.QueryRow("SELECT * FROM albums WHERE id = ? ", id)
 	if err := row.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price); err != nil {
 		if err == sql.ErrNoRows {
 			return alb, fmt.Errorf("albumsById %d: no such album", id)
@@ -94,7 +94,7 @@ func AlbumByID(id int64) (model.Album, error) {
 
 // AddAlbum adds a new album to the db
 func AddAlbum(alb model.Album) (int64, error) {
-	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES (?, ?, ?) ", alb.Title, alb.Artist, alb.Price)
+	result, err := db.Exec("INSERT INTO albums (title, artist, price) VALUES (?, ?, ?) ", alb.Title, alb.Artist, alb.Price)
 	if err != nil {
 		return 0, fmt.Errorf("addAlbum: %v", err)
 	}
